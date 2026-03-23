@@ -2,15 +2,58 @@ package pl.coderslab.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.dao.AuthorDao;
+import pl.coderslab.dao.PublisherDao;
+import pl.coderslab.entity.Author;
 import pl.coderslab.entity.Book;
 import pl.coderslab.dao.BookDao;
+import pl.coderslab.entity.Publisher;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class BookController {
     private final BookDao bookDao;
+    private final PublisherDao publisherDao;
+    private final AuthorDao authorDao;
 
-    public BookController(BookDao bookDao) {
+    public BookController(BookDao bookDao, PublisherDao publisherDao, AuthorDao authorDao) {
         this.bookDao = bookDao;
+        this.publisherDao = publisherDao;
+        this.authorDao = authorDao;
+    }
+
+    @GetMapping("/book/add-with-publisher")
+    @ResponseBody
+    public String addWithPublisher() {
+        Publisher publisher = new Publisher();
+        publisher.setName("Ala");
+        publisherDao.save(publisher);
+        Book book = new Book();
+        book.setTitle("Harry Potter");
+        book.setDescription("Czara ognia");
+        book.setRating(10);
+        book.setPublisher(publisher);
+        bookDao.save(book);
+        return "Dodano ksiazke o id: " + book.getId();
+    }
+
+    @GetMapping("/book/add-with-author")
+    @ResponseBody
+    public String addWithAuthor() {
+        Book book = new Book();
+        List<Author> authors = new ArrayList<>();
+        Author author1 = authorDao.findById(5);
+        Author author2 = authorDao.findById(6);
+        authors.add(author1);
+        authors.add(author2);
+        book.setTitle("Hobbit");
+        book.setDescription("Bilbo Baggins");
+        book.setRating(10);
+        book.setAuthors(authors);
+        bookDao.save(book);
+        return "Dodano ksiazke o id: " + book.getId();
     }
 
     @GetMapping("/book/add")
