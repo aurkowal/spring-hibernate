@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pl.coderslab.dao.PublisherDao;
 import pl.coderslab.entity.Publisher;
 
+import java.util.List;
+
 @Controller
 public class PublisherController {
 
@@ -30,6 +32,13 @@ public class PublisherController {
     public String get(@PathVariable("id") int id) {
         Publisher publisher = publisherDao.findById(id);
         return publisher.toString();
+    }
+
+    @RequestMapping("/publisher/get")
+    @ResponseBody
+    public String getAll() {
+        List<Publisher> publishers = publisherDao.findAll();
+        return publishers.toString();
     }
 
     @RequestMapping("/publisher/update/{id}/{name}")

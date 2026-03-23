@@ -1,5 +1,6 @@
 package pl.coderslab.controller;
 
+import jakarta.persistence.Query;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.dao.AuthorDao;
@@ -11,6 +12,7 @@ import pl.coderslab.entity.Publisher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class BookController {
@@ -90,6 +92,35 @@ public class BookController {
         Book book = bookDao.find(id);
         bookDao.delete(book);
         return "usunieto ksiazke";
+    }
+
+    @RequestMapping("/book/by-rating/{rating}")
+    @ResponseBody
+    public String bookByRating(@PathVariable("rating") int rating) {
+        return bookDao.findAllByRating(rating).stream()
+                .map(Book::toString)
+                .collect(Collectors.joining(", "));
+    }
+
+    @RequestMapping("/book/get-with-publisher")
+    @ResponseBody
+    public String getAllWithPublisher() {
+        List<Book> books = bookDao.findAllWithPublisher();
+        return books.toString();
+    }
+
+    @RequestMapping("/book/get-with-this-publisher")
+    @ResponseBody
+    public String getAllWithThisPublisher() {
+        List<Book> books = bookDao.findAllWithThisPublisher(publisherDao.findById(7));
+        return books.toString();
+    }
+
+    @RequestMapping("/book/get-with-this-author")
+    @ResponseBody
+    public String getAllWithThisAuthor() {
+        List<Book> books = bookDao.findAllWithThisAuthor(authorDao.findById(5));
+        return books.toString();
     }
 
 

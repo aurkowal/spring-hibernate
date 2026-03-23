@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.coderslab.entity.Author;
 import pl.coderslab.dao.AuthorDao;
+import pl.coderslab.entity.Publisher;
+
+import java.util.List;
 
 @Controller
 public class AuthorController {
@@ -33,6 +36,13 @@ public class AuthorController {
     public String get(@PathVariable("id") long id) {
         Author author = authorDao.findById(id);
         return author.toString();
+    }
+
+    @RequestMapping("/author/get")
+    @ResponseBody
+    public String getAll() {
+        List<Author> authors = authorDao.findAll();
+        return authors.toString();
     }
 
     @RequestMapping("/author/update/{id}/{firstName}/{lastName}")
